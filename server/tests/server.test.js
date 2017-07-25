@@ -1,15 +1,19 @@
 const expect = require('expect');
 const request = require('supertest');
 
-var {
-  app
-} = require('./../server');
-const {
-  Todo
-} = require('./../models/todo');
+var {app} = require('./../server');
+const {Todo} = require('./../models/todo');
+
+const todos = [{
+  text: 'First test todo'
+},{
+  text: 'Second test todo'
+}];
 
 beforeEach((done) => {
-  Todo.remove({}).then(() => done());
+  Todo.remove({}).then(() => {
+    return Todo.insertMany(todos);
+  }).then(() => done());
 });
 
 
@@ -31,7 +35,7 @@ describe('POST /todos', () => {
         if (err) {
           return done(err); // done closes the test off
         }
-        Todo.find().then((todos) => { // .then = promise
+        Todo.find({text}).then((todos) => { // .then = promise
           expect(todos.length).toBe(1);  // test for length 1 of ret results
           expect(todos[0].text).toBe(text); //expect the text to match
           done(); // close out of test
@@ -49,10 +53,26 @@ describe('POST /todos', () => {
           return done(err);
         }
         Todo.find().then((todos) => {
-          expect(todos.length).toBe(0); // check that the lendth of the TODOs doc is 0 as it should not have saved
+          expect(todos.length).toBe(2); // check that the lendth of the TODOs doc is 0 as it should not have saved
           done();
         }).catch((e) => done(e));
       });
   });
 
+
+});
+
+//// OK so here we go, we run the request with app to get express going
+  // we then request the get route of todos
+  // and check that the res was 200
+  // and that we have 2 entries, that we stubbed up above with the todos obj array
+describe('GET /todos', () => {
+  it('Should get all todos', (done) => {
+    request(app)
+    .get('/todos')
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.todos.length).toBe(2);
+    }).end(done);
+  })
 });
