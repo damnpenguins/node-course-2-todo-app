@@ -40,10 +40,10 @@ describe('POST /todos', () => {
   });
 
   it('should not create todo with invalid body data', (done) => {
-    request(app) // request the express app object
-      .post('/todos') // make a post req to the todos route
-      .send({}) // send an empty object to the todo save func
-      .expect(400) // expect a 400 bad req eturn val
+    request(app)          // request the express app object
+      .post('/todos')     // make a post req to the todos route
+      .send({})           // send an empty object to the todo save func
+      .expect(400)        // expect a 400 bad req eturn val
       .end((err, res) => {
         if (err) {
           return done(err);
