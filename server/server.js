@@ -26,6 +26,22 @@ app.post('/todos', (req, res) => {
   });
 });
 
+app.get('/todos', (req, res) => {
+
+    Todo.find().then((todos) => {
+      res.send({todos});
+      // NOTE: send an object rather than the todos array
+      // this is so that you can add other props to the return Value
+      // like this
+      // res.send({
+      //   todos,
+      //   otherKey: 'anotherVal',
+      //   otherKeyAgain: 'anotherValAgain',
+      // })
+    }, (e) => {
+      res.status(400).send(e);
+    });
+});
 
 
 app.listen(3000,() => {
