@@ -24,9 +24,7 @@ describe('POST /todos', () => {
 
     request(app) // request the express app object
       .post('/todos') //post data to the todos route
-      .send({ // send the json text
-        text
-      })
+      .send({text}) // send the json text
       .expect(200) //expect a 200 status ret from the server
       .expect((res) => {
         expect(res.body.text).toBe(text); // expect the retval text property to be the sdame as the stub passed to the test
