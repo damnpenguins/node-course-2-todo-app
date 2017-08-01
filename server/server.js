@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const {ObjectID} = require('mongodb');
+
 var {mongoose} = require('./db/mongoose');
 
 // es6 destructuring
@@ -42,6 +44,24 @@ app.get('/todos', (req, res) => {
       res.status(400).send(e);
     });
 });
+
+app.get('/todos/:id', (req, res) => {
+  //res.send(req.params);
+  var id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    // use return to finish execution of the function
+    return res.status(404).send();
+  }
+  Todo.findById(id).then((todo) => {
+    // if statement to handle null ret val
+    if (!todo) {
+      // use return to finish execution of the function
+      return res.status(404).send();
+    }
+    res.status(200).send({todo});
+  }).catch((e) => res.status(404).send());
+});
+
 
 
 app.listen(3000,() => {
