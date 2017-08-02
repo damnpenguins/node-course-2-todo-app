@@ -70,7 +70,7 @@ app.delete('/todos/:id', (req, res) => {
   if (!ObjectID.isValid(id)) {
     // not valid? 404
     // use return becuase we want to get out of the function
-    return res.status(400).send();
+    return res.status(404).send();
   }
 
   Todo.findByIdAndRemove(id).then((todo) => {
@@ -78,7 +78,7 @@ app.delete('/todos/:id', (req, res) => {
       // no doc returned therefore failure of remove cmd
       return res.status(404).send('nope');
     }
-        res.status(200).send(todo);
+        res.status(200).send({todo});
 
   }).catch((e) => {
     console.log('Operation failed');

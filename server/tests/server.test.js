@@ -108,3 +108,49 @@ describe('GET /todos/:id', () => {
     .end(done)
   })
 });
+
+
+describe('DELETE /todos/:id', (done) => {
+
+  it('Should delete a todo', (done) => {
+    // grab ID of second stub json object
+    var hexId = todos[1]._id.toHexString();
+
+    // request the app, run delete path, test returned deleted object ID
+    // to ensure it was the right one
+    request(app)
+    .delete(`/todos/${hexId}`)
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.todo._id).toBe(hexId);
+    })
+    .end((err,res) => {
+      if (err) {
+        return done(err);
+      }
+
+      // finally we test that the remove process worked
+      // by actually checking the db for the deleted object
+       Todo.findById(hexId).then((todo) => {
+         expect(todo).toNotExist();
+         done();
+       }).catch((e) => done(e));
+    });
+
+  });
+  //
+  it('Should return a 404 if todo not found', (done) => {
+    var hexId = new ObjectID().toHexString();
+    request(app)
+      .delete(`/todos/${hexId}`)
+      .expect(404)
+      .end(done)
+   });
+  it('Should return a 404 if ObjectID is inValid', (done) => {
+    var testID = 123;
+    request(app)
+    .delete(`/todos/${testID}`)
+    .expect(404)
+    .end(done)
+  });
+});
