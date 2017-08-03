@@ -1,6 +1,6 @@
+require('./config/config.js');
 const express = require('express');
 const bodyParser = require('body-parser');
-
 const {ObjectID} = require('mongodb');
 const _ = require('lodash');
 var {mongoose} = require('./db/mongoose');
@@ -117,5 +117,6 @@ app.patch('/todos/:id', (req, res) => {
 app.listen(port,() => {
   console.log(`started listening on port ${port}`);
 });
+
 
 module.exports = {app};
