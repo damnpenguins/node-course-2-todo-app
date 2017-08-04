@@ -6,6 +6,7 @@ const _ = require('lodash');
 var {mongoose} = require('./db/mongoose');
 
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 // es6 destructuring
 var {Todo} = require('./models/todo.js');
 var {User} = require('./models/user.js');
@@ -168,6 +169,38 @@ app.post('/users', (req, res) => {
 
 app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
+});
+
+
+// app.post('/users/login' ,(req, res) => {
+//    var body = _.pick(req.body, ['email', 'password']);
+//
+//    User.findByCredentials(body.email,body.password).then((user) => {
+//       user.generateAuthToken().then((token) => {
+//         res.header('x-auth', token).send(user);
+//       });
+//    }).catch((err) => {
+//      res.status(400).send();
+//    });
+//
+//   //  var email = req.body.email;
+//   //  var password = req.body.email;
+//    //
+//   //  res.send(body);
+//
+// });
+
+// POST /users/login {email, password}
+app.post('/users/login', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+
+  User.findByCredentials(body.email, body.password).then((user) => {
+    return user.generateAuthToken().then((token) => {
+      res.header('x-auth', token).send(user);
+    });
+  }).catch((e) => {
+    res.status(400).send();
+  });
 });
 
 
