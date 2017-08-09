@@ -100,7 +100,7 @@ app.delete('/todos/:id', authenticate, (req, res) => {
   });
 });
 
-app.patch('/todos/:id', authenticate, (req, res) => {
+app.patch('/todos/:id', authenticate,(req, res) => {
   var id = req.params.id;
   var body = _.pick(req.body, ['text', 'completed']);
 
@@ -119,7 +119,7 @@ app.patch('/todos/:id', authenticate, (req, res) => {
 
   Todo.findOneAndUpdate({
     _id:id,
-    _creator:req.user._id
+    _creator:req.user.id
   }, {$set: body}, {new: true}).then((todo) => {
     if (!todo) {
       return res.status(404).send();
